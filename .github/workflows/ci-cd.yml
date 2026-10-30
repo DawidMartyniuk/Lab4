@@ -1,0 +1,38 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie kodu
+        uses: actions/checkout@v3
+
+      - name: Konfiguracja Pythona
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalacja zależności
+        run: |
+          pip install -r requirements.txt
+
+      - name: Uruchomienie testów
+        run: |
+          pytest test_app.py
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie kodu
+        uses: actions/checkout@v3
+
+      - name: Budowa obrazu Dockera (Symulacja Deployu)
+        run: |
+          docker build -t moja-aplikacja:latest .
+          echo "Wdrożenie zakończone sukcesem!"
